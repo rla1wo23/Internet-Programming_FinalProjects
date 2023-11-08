@@ -1,0 +1,114 @@
+body {
+  background-color: #fff;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
+#navigator {
+  background-color: grey;
+  color: #fff;
+  padding: 10px;
+}
+
+#navigator ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#navigator ul li {
+  display: inline-block;
+  margin-right: 10px;
+  height: 100%;
+  position: relative;
+}
+
+#navigator ul li a {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+#user-welcome{
+  color:aqua
+}
+#navigator ul li a img {
+  height: auto;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+#admin-page {
+  float: right;
+}
+
+#content {
+  text-align: center;
+  margin-top: 100px;
+}
+#hero-section {
+  background-color: black;
+  color: #fff;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-content h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.hero-content p {
+  font-size: 24px;
+}
+#view-concert {
+  background-color: grey;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+#view-concert:hover {
+  background-color: #555;
+}
+
+.concert-details {
+  /* Add necessary styles to display the details properly */
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.concert-details p {
+  /* Adjust the text styles */
+  margin: 5px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.concert-details a {
+  /* Style the "Buy Now" link */
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.concert-details a:hover {
+  background-color: #0056b3;
+}
+
+#concert-details {
+  /* Hide the details container by default */
+  display: none;
+}

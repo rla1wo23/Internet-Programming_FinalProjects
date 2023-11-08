@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="../loginstyle.css">
+</head>
+
+<body>
+    <header id="navigator">
+        <nav>
+            <ul>
+                <li><a href="/goHome"><img src="../image/home.png"></a></li>
+                <li><a href="/login">회원가입/로그인 페이지</a></li>
+                <li><a href="/board">공연요청 게시판</a></li>
+                <li><a href="/goConcert">공연정보 보기</a></li>
+                <li><a href="/adminPage">관리자 페이지</a></li>
+                <li id="user-welcome"></li>
+            </ul>
+        </nav>
+    </header>
+    <h2>공연 등록하기</h2>
+
+    <h3>공연 정보 등록</h3>
+    <form id="ticketForm">
+        <label for="ticket_price">Ticket Price:</label>
+        <input type="number" id="ticket_price" required>
+        <br>
+        <label for="ticket_corp">Ticket Corporation:</label>
+        <input type="text" id="ticket_corp" required>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h3>아티스트 정보 등록</h3>
+    <form id="artistForm">
+        <label for="artist_name">Artist Name:</label>
+        <input type="text" id="artist_name" required>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h3>공연 장소 정보 등록</h3>
+    <form id="venueForm">
+        <label for="venue_id">Venue ID:</label>
+        <input type="text" id="venue_id" required>
+        <br>
+        <label for="venue_name">Venue Name:</label>
+        <input type="text" id="venue_name" required>
+        <br>
+        <label for="venue_address">Venue Address:</label>
+        <input type="text" id="venue_address" required>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h3>공연 정보 등록</h3>
+    <form id="concertForm" onsubmit="registerConcert(event)">
+        <label for="artist_name_concert">Artist Name:</label>
+        <input type="text" id="artist_name_concert" required>
+        <br>
+        <label for="venue_name_concert">Venue Name:</label>
+        <input type="text" id="venue_name_concert" required>
+        <br>
+        <label for="ticket_id_concert">Ticket ID:</label>
+        <input type="number" id="ticket_id_concert" required>
+        <br>
+        <label for="concert_name">Concert Name:</label>
+        <input type="text" id="concert_name" required>
+        <br>
+        <label for="concert_date">Concert Date:</label>
+        <input type="date" id="concert_date" required>
+        <br>
+        <label for="concert_time">Concert Time:</label>
+        <input type="time" id="concert_time" required>
+        <br>
+        <button type="submit">공연 정보 등록</button>
+    </form>
+    <script src="../scripts.js"></script>
+    <script>
+        // ticketForm 제출 이벤트 리스너
+        document.getElementById('ticketForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const ticket_price = document.getElementById('ticket_price').value;
+            const ticket_corp = document.getElementById('ticket_corp').value;
+
+            // 서버에 데이터 전송
+            axios.post('/registerTicket', { ticket_price, ticket_corp })
+                .then(response => {
+                    alert(response.data);
+                    document.getElementById('ticketForm').reset();
+                })
+                .catch(error => console.error(error));
+        });
+
+        // artistForm 제출 이벤트 리스너
+        document.getElementById('artistForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const artist_name = document.getElementById('artist_name').value;
+
+            // 서버에 데이터 전송
+            axios.post('/registerArtist', { artist_name })
+                .then(response => {
+                    alert(response.data);
+                    document.getElementById('artistForm').reset();
+                })
+                .catch(error => console.error(error));
+        });
+
+        // venueForm 제출 이벤트 리스너
+        document.getElementById('venueForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const venue_id = document.getElementById('venue_id').value;
+            const venue_name = document.getElementById('venue_name').value;
+            const venue_address = document.getElementById('venue_address').value;
+
+            // 서버에 데이터 전송
+            axios.post('/registerVenue', { venue_id, venue_name, venue_address })
+                .then(response => {
+                    alert(response.data);
+                    document.getElementById('venueForm').reset();
+                })
+                .catch(error => console.error(error));
+        });
+
+        // concertForm 제출 이벤트 리스너
+        function registerConcert(event) {
+            event.preventDefault();
+
+            const artist_name = document.getElementById("artist_name_concert").value;
+            const venue_name = document.getElementById("venue_name_concert").value;
+            const ticket_id = document.getElementById("ticket_id_concert").value;
+            const concert_name = document.getElementById("concert_name").value;
+            const concert_date = document.getElementById("concert_date").value;
+            const concert_time = document.getElementById("concert_time").value;
+
+            axios
+                .post("/registerConcert", {
+                    artist_name,
+                    venue_name,
+                    ticket_id,
+                    concert_name,
+                    concert_date,
+                    concert_time,
+                })
+                .then((response) => {
+                    alert(response.data);
+                })
+                .catch((error) => {
+                    alert(error.response.data);
+                });
+        }
+
+    </script>
+</body>
+
+</html>

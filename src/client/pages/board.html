@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../board.css">
+</head>
+
+<body>
+    <header id="navigator">
+            <nav>
+                <ul>
+                    <li><a href="/goHome"><img src="../image/home.png"></a></li>
+                    <li><a href="/loginPage">회원가입/로그인 페이지</a></li>
+                    <li><a href="/board">공연요청 게시판</a></li>
+                    <li><a href="/goConcert">공연정보 보기</a></li>
+                    <li><a href="/adminPage">관리자 페이지</a></li>
+                    <li id="user-welcome"></li>
+                </ul>
+            </nav>
+    </header>
+    <header>
+        <h1>게시판</h1>
+        <a href="/writing">글 작성</a>
+    </header>
+    <div id="board-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>글 번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>삭제하기</th>
+                </tr>
+            </thead>
+            <tbody id="board-list"></tbody>
+        </table>
+        <div id="note-content"></div>
+    </div>
+    <script src="../scripts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function getBoardList() {
+            $.ajax({
+                url: "/boarding",
+                type: "GET",
+                success: function (response) {
+                    $("#board-list").empty();
+                    response.forEach(function (row) {
+                        var tr = $("<tr>");
+                        tr.append($("<td>").text(row.note_id));
+                        tr.append($("<td>").html("<a class='title-link' href='#' data-note-id='" + row.note_id + "'>" + row.note_title + "</a>"));
+                        tr.append($("<td>").text(row.user_id));
+                        tr.append($("<td>").html("<button class='delete-btn' data-note-id='" + row.note_id + "'>Delete</button>"));
+                        $("#board-list").append(tr);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function getNoteContent(noteId) {
+            $.ajax({
+                url: "/contents/" + noteId,
+                type: "GET",
+                success: function (response) {
+                    $("#note-content").empty();
+                    response.forEach(function (note) {
+                        var noteDiv = $("<div>");
+                        noteDiv.append($("<p>").text("게시글 번호: " + note.note_id));
+                        noteDiv.append($("<p>").text("작성일: " + note.note_upload));
+                        noteDiv.append($("<p>").text("작성자: " + note.user_id));
+                        noteDiv.append($("<p>").text("내용: " + note.note_content));
+
+                        // Check user permissions and display delete button if applicable
+                        if (note.user_id === "<%= req.session.user_id %>" || "<%= req.session.user_role %>" === "admin") {
+                            noteDiv.append($("<button>").text("Delete").attr("data-note-id", note.note_id).click(deleteNote));
+                        }
+
+                        $("#note-content").append(noteDiv);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function deleteNote() {
+            var noteId = $(this).data("note-id");
+
+            // Confirm deletion with the user
+            if (confirm("이 게시글을 삭제할까요?")) {
+                $.ajax({
+                    url: "/delete/" + noteId,
+                    type: "POST",
+                    success: function (response) {
+                        alert(response);
+                        // Refresh the note list
+                        getBoardList();
+                        // Clear the note content
+                        $("#note-content").empty();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            getBoardList();
+
+            $(document).on("click", ".title-link", function () {
+                var noteId = $(this).data("note-id");
+                getNoteContent(noteId);
+            });
+
+            $(document).on("click", ".delete-btn", function () {
+                deleteNote.call(this);
+            });
+        });
+    </script>
+</body>
+
+</html>

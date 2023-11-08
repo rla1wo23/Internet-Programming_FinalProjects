@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing</title>
+    <link rel="stylesheet" href="../board.css">
+</head>
+
+<body>
+    <header>
+        <h1>글 작성</h1>
+    </header>
+    <div id="writing-container">
+        <form id="writing-form">
+            <label for="note_title">제목</label>
+            <input type="text" id="note_title" name="note_title" required>
+
+            <label for="note_content">내용</label>
+            <textarea id="note_content" name="note_content" required></textarea>
+
+            <input type="submit" value="등록">
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 글 작성 폼 제출
+            $("#writing-form").submit(function (e) {
+                e.preventDefault();
+                var note_title = $("#note_title").val();
+                var note_content = $("#note_content").val();
+
+                $.ajax({
+                    url: "/writing",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ note_title: note_title, note_content: note_content }),
+                    success: function (response) {
+                        alert(response.message);
+                        window.location.href = "/board";
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

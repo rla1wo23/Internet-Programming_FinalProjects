@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>INDIEINFO</title>
+    <link rel="stylesheet" href="../loginstyle.css">
+</head>
+
+<body>
+    <header id="navigator">
+        <nav>
+            <ul>
+                <li><a href="/goHome"><img src="../image/home.png"></a></li>
+                <li><a href="/login">회원가입/로그인 페이지</a></li>
+                <li><a href="/board">공연요청 게시판</a></li>
+                <li><a href="/goConcert">공연정보 보기</a></li>
+                <li><a href="/adminPage">관리자 페이지</a></li>
+                <li id="user-welcome"></li>
+
+            </ul>
+        </nav>
+    </header>
+    <h2>관리자 페이지에는 관리자만 접근할 수 있습니다. 다시 로그인하세요</h2>
+    <div class="container">
+        <h2 class="login-title">Login</h2>
+        <form class="login-form" id="loginForm">
+            <label for="user_id">user_id:</label>
+            <input type="text" id="user_id" name="user_id" required>
+            <label for="user_pw">user_pw:</label>
+            <input type="password" id="user_pw" name="user_pw" required>
+            <input type="submit" value="Login">
+        </form>
+        <div class="signup-button">
+            <p>Don't have an account? <a href="/signupPage">Sign up</a></p>
+        </div>
+    </div>
+    <script src="../scripts.js"></script>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            var user_id = document.getElementById("user_id").value;
+            var user_pw = document.getElementById("user_pw").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/login", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            // 로그인 성공
+                            alert(response.message);
+                            window.location.href = "/goHome";
+                        } else {
+                            // 로그인 실패
+                            alert(response.message);
+                        }
+                    } else {
+                        console.log("Error: " + xhr.status);
+                    }
+                }
+            };
+
+            var data = JSON.stringify({ user_id: user_id, user_pw: user_pw });
+            xhr.send(data);
+        });
+        function goToAdminPage() {
+                fetch("/adminPage", { method: "GET" })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.permission === "admin") {
+                            window.location.href = "/adminPage";
+                        } else {
+                            alert("권한이 없습니다.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }   
+
+    </script>
+</body>
+
+</html>
